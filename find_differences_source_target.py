@@ -56,7 +56,12 @@ def find_properties_in_paths(paths):
 			for path, _, _ in os.walk(start_path):
 				for file in glob.glob(path + "\\*.properties"):
 					if (os.path.basename(file) in file_lists):
-						file_lists[os.path.basename(file) + "-[duplicated]"] = file
+						dupl_num = 1
+						file_basename = os.path.basename(file)
+						while(((file_basename) + " (" + str(dupl_num) +")") in file_lists):
+							dupl_num += 1
+						file_basename = file_basename + " (" + str(dupl_num) + ")"
+						file_lists[file_basename] = file
 					else:
 						file_lists[os.path.basename(file)] = file
 	for path in paths:
@@ -116,13 +121,13 @@ if(files_in_source_not_in_target):
 	difference_result += "Files exist in SOURCE but not in TARGET: \n"
 	num_of_different_files += len(files_in_source_not_in_target)
 	for file in files_in_source_not_in_target:
-		difference_result += "    " + file
+		difference_result += "    " + source_file_list[file] + "\n"
 files_in_target_not_in_source = set(target_file_list.keys()) - set(source_file_list.keys())
 if(files_in_target_not_in_source):
 	difference_result += "\nFiles exist in TARGET but not in SOURCE: \n"
 	num_of_different_files += len(files_in_target_not_in_source)
 	for file in files_in_target_not_in_source:
-		difference_result += "    " + file
+		difference_result += "    " + target_file_list[file] + "\n"
 
 difference_result += "\n\n>> DIFFERENCES:\n"
 for file in source_file_list.keys():
